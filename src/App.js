@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Notification from "./components/Notification";
 import { useDispatch } from "react-redux";
 import { uiActions } from "./store/ui-slice";
+import { sendCardData } from "./store/cart-slice";
 
 let isFirstRender = true;
 function App() {
@@ -19,40 +20,8 @@ function App() {
       isFirstRender = false;
       return;
     }
-    const sendRequest = async () => {
-      dispatch(
-        uiActions.showNotification({
-          open: true,
-          message: "Sending Request...",
-          type: "warning",
-        })
-      );
-      const res = await fetch(
-        "https://redux-shopping-8d6d5-default-rtdb.firebaseio.com/cartItems.json",
-        {
-          method: "PUT",
-          body: JSON.stringify(cart),
-        }
-      );
-      const data = await res.json();
-      dispatch(
-        uiActions.showNotification({
-          open: true,
-          message: "Request Sent successfully",
-          type: "success",
-        })
-      );
-    };
-    sendRequest().catch((err) => {
-      dispatch(
-        uiActions.showNotification({
-          open: true,
-          message: "Request Failed",
-          type: "error",
-        })
-      );
-    });
-  }, [cart]);
+    dispatch(sendCardData(cart));
+  }, [cart, dispatch]);
   return (
     <div className="App">
       {notification && (
