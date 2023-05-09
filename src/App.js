@@ -5,8 +5,7 @@ import Layout from "./components/Layout";
 import { useSelector } from "react-redux";
 import Notification from "./components/Notification";
 import { useDispatch } from "react-redux";
-import { uiActions } from "./store/ui-slice";
-import { sendCardData } from "./store/cart-slice";
+import { fetchData, sendCardData } from "./store/cart-actions";
 
 let isFirstRender = true;
 function App() {
@@ -16,11 +15,17 @@ function App() {
   const notification = useSelector((state) => state.ui.notification);
 
   useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (isFirstRender) {
       isFirstRender = false;
       return;
     }
-    dispatch(sendCardData(cart));
+    if (cart.changed) {
+      dispatch(sendCardData(cart));
+    }
   }, [cart, dispatch]);
   return (
     <div className="App">

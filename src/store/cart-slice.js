@@ -7,9 +7,15 @@ const cartSlice = createSlice({
     itemList: [],
     totalQuantity: 0,
     showCart: false,
+    changed: false,
   },
   reducers: {
+    replaceData(state, action) {
+      state.itemList = action.payload.itemList;
+      state.totalQuantity = action.payload.totalQuantity;
+    },
     addToCart(state, action) {
+      state.changed = true;
       const newItem = action.payload;
       const existingItem = state.itemList.find(
         (item) => item.id === newItem.id
@@ -29,6 +35,7 @@ const cartSlice = createSlice({
       state.totalQuantity += 1;
     },
     removeFromCart(state, action) {
+      state.changed = true;
       const id = action.payload;
       const existingItem = state.itemList.find((item) => item.id === id);
       if (existingItem.quantity === 1) {
@@ -44,42 +51,6 @@ const cartSlice = createSlice({
     },
   },
 });
-export const sendCardData = (cart) => {
-  return async (dispatch) => {
-    dispatch(
-      uiActions.showNotification({
-        open: true,
-        message: "Sending Request...",
-        type: "warning",
-      })
-    );
-    try {
-      const res = await fetch(
-        "https://redux-shopping-8d6d5-default-rtdb.firebaseio.com/cartItems.json",
-        {
-          method: "PUT",
-          body: JSON.stringify(cart),
-        }
-      );
-      const data = await res.json();
-      dispatch(
-        uiActions.showNotification({
-          open: true,
-          message: "Request Sent successfully",
-          type: "success",
-        })
-      );
-    } catch (err) {
-      dispatch(
-        uiActions.showNotification({
-          open: true,
-          message: "Request Failed",
-          type: "error",
-        })
-      );
-    }
-  };
-};
 
 export const cartActions = cartSlice.actions;
 
