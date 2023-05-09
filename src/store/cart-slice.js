@@ -44,7 +44,7 @@ const cartSlice = createSlice({
     },
   },
 });
-export const sendCardData = async (cart) => {
+export const sendCardData = (cart) => {
   return async (dispatch) => {
     dispatch(
       uiActions.showNotification({
@@ -53,7 +53,7 @@ export const sendCardData = async (cart) => {
         type: "warning",
       })
     );
-    const sendRequest = async () => {
+    try {
       const res = await fetch(
         "https://redux-shopping-8d6d5-default-rtdb.firebaseio.com/cartItems.json",
         {
@@ -69,9 +69,6 @@ export const sendCardData = async (cart) => {
           type: "success",
         })
       );
-    };
-    try {
-      await sendRequest();
     } catch (err) {
       dispatch(
         uiActions.showNotification({
